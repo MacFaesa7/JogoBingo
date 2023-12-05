@@ -1,0 +1,66 @@
+body {
+    background-image: url('caminho/para/imagem/mesa.jpg'); /* Adicione o caminho correto para a imagem de fundo */
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+.jogo-header {
+    background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente branco */
+    width: 100%;
+    height: 150px;
+}
+
+.borda-tabela {
+    border: 1px solid black;
+    margin: 5px;
+}
+
+th,
+td {
+    text-align: center;
+    padding: 10px;
+    font-size: 20px;
+    color: black; /* Adicionado para garantir a visibilidade do texto */
+}
+
+.jogo-header h1,
+h2 {
+    color: black; /* Adicionado para garantir a visibilidade do texto */
+}
+
+.centro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sorteado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    width: 30px;
+    height: 30px;
+    color: blue;
+    background-color: pink;
+    border: 1px solid blueviolet;
+    border-radius: 15px;
+    margin: 5px;
+}
+
+/* Adicionado para melhorar a aparência dos botões */
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
