@@ -1,66 +1,178 @@
 body {
-    background-image: url('caminho/para/imagem/mesa.jpg'); /* Adicione o caminho correto para a imagem de fundo */
-    background-size: cover;
-    background-repeat: no-repeat;
-    color: white;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	background-color:rgb(26, 26, 26);
+	color: #fff;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	text-align: center;
+	font-weight: 600;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: start;
+
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black,
+		1px 1px 3px black,
+		1px 1px 5px rgba(0, 0, 0, 0.5),
+		1px 1px 10px rgba(0, 0, 0, 0.3);
 }
 
-.jogo-header {
-    background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente branco */
-    width: 100%;
-    height: 150px;
+h1 {
+	font-size: 4vh;
+	line-height: 4vh;
+	margin: 2vh 0;
 }
 
-.borda-tabela {
-    border: 1px solid black;
-    margin: 5px;
-}
-
-th,
-td {
-    text-align: center;
-    padding: 10px;
-    font-size: 20px;
-    color: black; /* Adicionado para garantir a visibilidade do texto */
-}
-
-.jogo-header h1,
 h2 {
-    color: black; /* Adicionado para garantir a visibilidade do texto */
+	font-size: 3vh;
+	line-height: 3vh;
+	margin: 0;
 }
 
-.centro {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+p {
+	font-size: 2.4vh;
+	line-height: 2.4vh;
+}
+.header{
+	
+}
+#mensagem.VENCEDOR{
+	background-color: blue;
+	border-radius: 15px;
+	padding: 10px;
 }
 
-.sorteado {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    width: 30px;
-    height: 30px;
-    color: blue;
-    background-color: pink;
-    border: 1px solid blueviolet;
-    border-radius: 15px;
-    margin: 5px;
+.container {
+	width: 90vw;
+	padding: 0 5vh;
+	background-color: orangered;
 }
 
-/* Adicionado para melhorar a aparência dos botões */
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
+#buttonArea {
+	height: 25%;
+	width: 50%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-evenly;
 }
 
-.btn-warning {
-    background-color: #ffc107;
-    border-color: #ffc107;
+#buttonArea button {
+	all: unset;
+	background-color: orangered;
+	padding: 1vh 3vw;
+	border-radius: 2vh;
+	font-size: 2.8vh;
+	font-weight: 600;
 }
 
-.btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
+.jogo {
+	display: flex;
+	flex-direction: row;
+	align-items: start;
+	justify-content: space-around;
+
+	column-gap: 3vw;
+}
+
+.jogo>div {
+
+}
+
+.jogo .jogadores {
+	flex-grow: 1;
+}
+
+.jogo .sorteio {
+	flex-grow: 1;
+}
+
+#jogadoresArea {
+	display: grid;
+	grid-template-columns: 48% 48%;
+	column-gap: 4%;
+	row-gap: 2vh;
+}
+
+#jogadoresArea .cartela {
+	background-color: greenyellow;
+	border-radius: 3vh;
+	display: flex;
+	flex-direction: column;
+	row-gap: 1vh;
+	padding: 15px;
+}
+
+#jogadoresArea .cartela.VENCEDOR {
+	background-color: blue;
+}
+
+#jogadoresArea .cartela .nomeJogador {
+	font-size: 3vh;
+	font-weight: 700;
+}
+
+#jogadoresArea .cartela .numerosArea {
+	display: grid;
+	flex-grow: 2;
+	row-gap: 0;
+	grid-template-columns: 20% 20% 20% 20% 20%;
+	grid-template-rows: 20% 20% 20% 20% 20%;
+	grid-auto-flow: column;
+
+	font-size: 2.8vh;
+	font-weight: 700;
+}
+
+#jogadoresArea .cartela .numerosArea .numero {
+	/* background-color: rgb(0, 0, 0, 0.2); */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+	margin: 5px;
+	border-radius: 12px;
+}
+
+#jogadoresArea .cartela .numerosArea .numero.sorteado {
+	background-color: rgb(0, 196, 49);
+}
+
+#jogadoresArea .cartela .numerosArea .bingo {
+	color: rgb;
+	font-size: 3.4vh;
+	font-weight: 800;
+}
+
+#jogadoresArea .cartela .bingoArea{
+	display: grid;
+	row-gap: 0;
+	grid-template-columns: 20% 20% 20% 20% 20%;
+	font-size: 3vh;
+	font-weight: 700;
+	color: red;
+}
+#jogadoresArea .cartela .bingoArea .letra{
+
+}
+
+.sorteio{
+	height: 100%;
+	border-radius: 2vh;
+	background-color: rgb(19, 63, 36);
+}
+#sorteados {
+
+	display: grid;
+	flex-grow: 2;
+	row-gap: 0;
+	grid-template-columns: 20% 20% 20% 20% 20%;
+	padding: 2vh 5%;
+
+	font-size: 2.4vh;
+	font-weight: 700;
 }
