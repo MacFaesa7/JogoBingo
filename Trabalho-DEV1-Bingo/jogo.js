@@ -1,8 +1,28 @@
-let vetorJogadores = [];
-let jogoRolando = false;
+var intervaloSorteio = 100;
 
-function gerarNumeroAleatorio(inicioIntervalo, fimIntervalo) {
-    return Math.floor((fimIntervalo - inicioIntervalo) * Math.random()) + inicioIntervalo;
+const gerarCartelasButton = document.getElementById("gerarCartelasButton");
+gerarCartelasButton.addEventListener("click", () => gerarCartelasJogadores());
+
+const iniciarJogoButton = document.getElementById("iniciarJogoButton");
+iniciarJogoButton.addEventListener("click", () => iniciarJogo());
+
+const jogadoresArea = document.getElementById("jogadoresArea");
+
+const divSorteados = document.getElementById("sorteados");
+
+const divMensagem = document.getElementById("mensagem");
+
+const numeroMaximo = 75;
+const numerosPorJogador = 24;
+var cartelaGerada = false;
+
+var vetorJogadores = [];
+var vetorSorteados = [];
+var vetorNaoSorteados = [];
+vetorNaoSorteados = Array.from({ length: numeroMaximo }, (_, index) => index + 1);
+
+function gerarNumeroAleatorio(min, max) {
+    return Math.floor((max - min) * Math.random()) + min;
 }
 
 function gerarFileira(quantidadeNumeros, inicio, fim) {
@@ -22,196 +42,205 @@ function gerarFileira(quantidadeNumeros, inicio, fim) {
     return cartela;
 }
 
-function gerarNumeroAleatorio(min, max){
-    return Math.ceil(Math.random()*(max - min));
-}
+function gerarCartelasJogadores() {
+    const numeroJogadores = prompt("Digite a quantidade de jogadores (2-4):");
 
-let cartela = [];
-let pares = [];
-let impares = [];
-
-//Loop de repetição / laço de repetição
-//FIRA CODE
-
-for(let i = 0; i < 25; i++){
-    let numeroAleatorio = gerarNumeroAleatorio(1,75);
-    if(cartela.indexOf(numeroAleatorio) === -1){
-        cartela.push(numeroAleatorio);
-        if(numeroAleatorio%2 === 0){
-            pares.push(numeroAleatorio);
-        }else{
-            impares.push(numeroAleatorio);
-        }
-    }
-
-}
-
-function gerarCartela() {
-    return [gerarFileira(5, 1, 15), gerarFileira(5, 16, 30), gerarFileira(5, 31, 45), gerarFileira(5, 46, 60), gerarFileira(5, 61, 75)];
-}
-
-function gerarCartelaHTML() {
-
-    if(jogoRolando == true){
-        alert("Não é possível gerar uma cartela com o jogo em andamento!");
+	if(numeroJogadores < 2 || numeroJogadores > 4){
+        alert("Número de JOGADORES de 2 a 4");
         return;
     }
 
-    let nomeJogador = prompt("Digite o nome do jogador:");
-    if(nomeJogador == "" || nomeJogador == null){
-        alert("Você precisa digitar o nome do jogador!!!");
-        return;
-    }else if(nomeJogador.length <= 5){
-        alert("O nome é muito pequeno!!!");
-        return;
+    vetorJogadores = [];
+
+    for (let i = 0; i < numeroJogadores; i++) {
+        criarJogador(i+1);
     }
 
-    let titulo = ['B', 'I', 'N', 'G', 'O'];
+    renderizarJogadores();
+    cartelaGerada = true;
+}
+
+function criarJogador(numeroJogador){
+    let nomeJogador = prompt(`Digite o nome do jogador ${numeroJogador}: `);
+
+	if(nomeJogador == null || nomeJogador.length == 0 || nomeJogador == "")
+		nomeJogador = "Jogador " + numeroJogador;
+
+	nomeJogador = limitarNome(nomeJogador, 20);
+
     let cartela = gerarCartela();
-
-    let jogador = {
+    let novoJogador = {
         nome: nomeJogador,
         cartela: cartela
     }
 
-    vetorJogadores.push(jogador);
+    vetorJogadores.push(novoJogador);
     console.log(vetorJogadores);
+}
 
-    let divBingo = document.getElementById("bingo");
+function limitarNome(str, max) {
+	return str.length > max ? str.substr(0, max-1) + '…' : str;
+}
 
-    let h3nome = document.createElement("h3");
-    h3nome.style = "text-align: center;"
-    h3nome.innerText = nomeJogador;
+function gerarCartela() {
+    //return Array.from({ length: 15+1 - 1}, (_, index) => index + 1);
+    //return Array.from({ length: numerosPorJogador}, (_, index) => index + 1);
+    let cartela = [];
 
+	let coluna1 = gerarFileiraCartela(5, 1, 15);
+	let coluna2 = gerarFileiraCartela(5, 16, 30);
+	let coluna3 = gerarFileiraCartela(4, 31, 45);
+	let coluna4 = gerarFileiraCartela(5, 46, 60);
+	let coluna5 = gerarFileiraCartela(5, 61, 75);
 
-    let divCartela = document.createElement("div");
-    divCartela.appendChild(h3nome);
-    divCartela.className = "col-4";
-    let divTabela = document.createElement("div");
-    divTabela.style = "display: flex; justify-content: center;"
-    let table = document.createElement("table");
-    table.className = "borda-tabela";
-    let tr = document.createElement("tr");
+	cartela = cartela.concat(coluna1, coluna2, coluna3, coluna4, coluna5);
+	//cartela.sort(function(a, b) { return a - b; });
+    return cartela;
+}
 
-    titulo.forEach(function (elemento) {
-        let td = document.createElement("td");
-        td.innerText = elemento;
-        tr.appendChild(td);
+function gerarFileiraCartela(quantidadeNumeros, numeroMinimo, numeroMaximo){
+    numerosFileira = Array.from({ length: numeroMaximo+1 - numeroMinimo}, (_, index) => index + numeroMinimo);
+    let fileira = [];
+
+	for (i = 0; i < quantidadeNumeros; i++) {
+        const randomIndex = Math.floor(Math.random() * numerosFileira.length);
+        let numero = numerosFileira[randomIndex];
+        numerosFileira.splice(randomIndex, 1);        
+        fileira.push(numero);
+    }
+
+	return fileira;
+}
+
+function renderizarJogadores(){
+    jogadoresArea.innerHTML = "";
+    vetorJogadores.forEach((jogador) => {
+        const divCartela = document.createElement("div");
+        divCartela.classList.add("cartela");
+
+        const divNomeJogador = document.createElement("div");
+        divNomeJogador.className = "nomeJogador";
+        divNomeJogador.innerHTML = jogador.nome;
+        divCartela.appendChild(divNomeJogador); 
+
+        const divBingoArea = document.createElement("div");
+        divBingoArea.className = "bingoArea";
+        divBingoArea.innerHTML = `<div class="letra">B</div>
+                                    <div class="letra">I</div>
+                                    <div class="letra">N</div>
+                                    <div class="letra">G</div>
+                                    <div class="letra">O</div>`;
+        divCartela.appendChild(divBingoArea);
+
+        const divNumerosArea = document.createElement("div");
+        divNumerosArea.className = "numerosArea";
+        jogador.cartela.forEach((numero, index) => {
+            const numeroDiv = document.createElement("div");
+            numeroDiv.className = "numero";
+            numeroDiv.innerHTML = numero;
+            if(isNumeroSorteado(numero))
+                numeroDiv.className += " sorteado";            
+            divNumerosArea.appendChild(numeroDiv);
+
+            if(index == 11){ //adiciona espaço em branco no centro
+				const vazioDiv = document.createElement("div");
+				vazioDiv.className = "numero bingo";
+				vazioDiv.innerHTML = "B";          
+				divNumerosArea.appendChild(vazioDiv);	
+            }
+        });
+
+        if(jogadorVenceu(jogador))
+            divCartela.classList.add("VENCEDOR");
+        divCartela.appendChild(divNumerosArea);
+
+        jogadoresArea.appendChild(divCartela);
     });
-
-    table.appendChild(tr);
-
-    for (let linha = 0; linha < 5; linha++) {
-        let tr = document.createElement("tr");
-        for (let coluna = 0; coluna < 5; coluna++) {
-            let td = document.createElement("td");
-            td.className = "borda-tabela";
-            if (linha == 2 && coluna == 2) {
-                td.innerText = "X";
-            } else {
-                td.innerText = cartela[coluna][linha];
-            }
-            tr.appendChild(td);
-        }
-        table.appendChild(tr);
-    }
-
-    divTabela.appendChild(table);
-    divCartela.appendChild(divTabela);
-    divCartela.style = "display: inline;"
-    divBingo.appendChild(divCartela);
-
 }
 
-function verificaCartela(cartela, numerosSorteados, quantidadeNumeros) {
-    if (numerosSorteados.length < quantidadeNumeros) {
+function renderizarSorteados(){
+	//vetorSorteados.sort(function(a, b) { return a - b; });
+
+    divSorteados.innerHTML = "";
+    vetorSorteados.forEach((numero) => {
+        const numeroDiv = document.createElement("div");
+        numeroDiv.className = "numero";
+        numeroDiv.innerHTML = numero;
+        divSorteados.appendChild(numeroDiv);
+    });
+}
+
+function isNumeroSorteado(numero){
+    return vetorSorteados.includes(numero);
+}
+
+function jogadorVenceu(jogador){
+    let venceu = true;
+    jogador.cartela.forEach((numero) => {
+        if(!isNumeroSorteado(numero)){
+            venceu = false;
+        }
+    });
+    return venceu;
+}
+
+function sortearNumero(){
+    if(vetorNaoSorteados.length == 0)
         return false;
-    }
 
-    let numerosExistem = true;
-    for(let i = 0; i < 5; i++){
-        for(let j = 0; j < 5; j++){
-            if (numerosSorteados.includes(cartela[i][j]) == true) {
-                numerosExistem = true;
-            } else {
-                numerosExistem = false;
-                return false;
-            }
-        }
-    }
+    const randomIndex = Math.floor(Math.random() * vetorNaoSorteados.length);
+    let numeroSorteado = vetorNaoSorteados[randomIndex];
+    vetorNaoSorteados.splice(randomIndex, 1);        
+    vetorSorteados.push(numeroSorteado);
 
-    if (numerosExistem == true) {
-        return true;
-    }
+    return true;
 }
 
-function jogarBingo() {
-    if(vetorJogadores.length < 2){
-        alert("Você precisa ter pelo menos dois jogadores para jogar!!!");
+function iniciarJogo() {
+    if(!cartelaGerada){
+        alert("Você precisa gerar as cartelas antes de iniciar o jogo");
         return;
     }
-    jogoRolando = true;
-    let botaoGerarCartela = document.getElementById("botaoGerarCartela");
-    botaoGerarCartela.classList.add = "disabled"
-    let vetorTds = document.getElementsByTagName("td");
-    console.log(vetorTds);
-    let numerosSorteados = [];
-    let divSorteados = document.getElementById("sorteados");
+
+    iniciarJogoButton.remove();
+    gerarCartelasButton.remove();
+
     let intervalo = setInterval(function () {
-        let numeroExiste = true;
-        while (numeroExiste == true) {
-            let numeroAleatorio = gerarNumeroAleatorio(1, 75);
-            if (numerosSorteados.includes(numeroAleatorio) == true) {
-                numeroExiste = true;
-            } else {
-                numeroExiste = false;
-                numerosSorteados.push(numeroAleatorio);
-                for(let i = 0; i < vetorTds.length; i++){
-                    if(vetorTds[i].innerText == numeroAleatorio){
-                        vetorTds[i].style = "background-color: green;"
-                    }
+        if(sortearNumero()){
+            renderizarSorteados();
+            renderizarJogadores();
+    
+            vetorJogadores.forEach((jogador) => {
+                if(jogadorVenceu(jogador)){
+					finalizarJogo();
+                    clearInterval(intervalo);
                 }
-                let divNumero = document.createElement("div");
-                divNumero.classList.add("col-2");
-                divNumero.classList.add("sorteado");
-                divNumero.innerText = numeroAleatorio;
-                divSorteados.appendChild(divNumero);
-                console.log("Números sorteados:", numerosSorteados);
-                vetorJogadores.forEach(function (jogador) {
-                    if (verificaCartela(jogador.cartela, numerosSorteados, 25) == true) {
-                        console.log(`${jogador.nome} ganhou o BINGO! Parabénnnsssssss!!!!!!`);
-                        let h2Vencedor = document.getElementById("vencedor");
-                        h2Vencedor.innerText += `${jogador.nome} ganhou o BINGO! Parabénnnsssssss!!!!!!\n`;
-                        clearInterval(intervalo);
-                        jogoRolando = false;
-                    }
-                });
-            }
+            });
         }
-        if (numerosSorteados.length >= 75) {
+        else{
             console.log("Sorteio Finalizado!");
             clearInterval(intervalo);
         }
-    }, 200);
+    }, intervaloSorteio);
 }
 
-function reiniciarJogo(){
-    let bingo = document.querySelector("#bingo");
-    let areaSorteio = document.querySelector("#sorteados");
+function finalizarJogo(){
+	divMensagem.className = "VENCEDOR";
 
-    let cartelas = document.querySelectorAll("#bingo > div");
-    let numerosSorteados = document.querySelectorAll("#sorteados > div")
-    if(cartelas.length > 0 && jogoRolando == false) {
-        cartelas.forEach(function(cartela){
-            bingo.removeChild(cartela);
-        });
-        numerosSorteados.forEach(function(numero){
-            areaSorteio.removeChild(numero);
-        })
-        let h2Vencedor = document.getElementById("vencedor");
-        h2Vencedor.innerText = "";
-        vetorJogadores = [];
-    }else{
-        alert("Você não pode reiniciar o jogo enquanto ele está rolando!")
-    }
+	let vencedores = [];
+	vetorJogadores.forEach((jogador) => {
+		if(jogadorVenceu(jogador)){
+			vencedores.push(jogador.nome);
+		}
+	});	
+
+	if(vencedores.length > 1){
+		divMensagem.innerHTML = `Os vencedores foram: `;
+		vencedores.forEach((vencedor) => {
+			divMensagem.innerHTML += `<br>${vencedor}`;
+		});
+	}
+	else{
+		divMensagem.innerHTML = `O vencedor foi ${vencedores[0]}`;
+	}
 }
